@@ -9,7 +9,13 @@ function App() {
   });
   const [results, setResults] = useState(0);
   const [totalRepayment, setTotalRepayment] = useState(0);
-  const [hasResults, setHasResults] = useState(true);
+  const [hasResults, setHasResults] = useState(false);
+  const [errors, setErrors] = useState({
+    mortgageAmt: "",
+    mortgageTerm: "",
+    interestRate: "",
+    mortgageType: "",
+  });
 
   function handleChange(e) {
     const { name, value } = e.target;
@@ -17,10 +23,30 @@ function App() {
       ...prev,
       [name]: value,
     }));
+    // Clear error for the field being edited
+    setErrors((prev) => ({
+      ...prev,
+      [name]: "",
+    }));
   }
 
   function calculate(e) {
     e.preventDefault();
+    // Basic required-field validation
+    const newErrors = {
+      mortgageAmt: formData.mortgageAmt === "" ? "this field is required" : "",
+      mortgageTerm: formData.mortgageTerm === "" ? "this field is required" : "",
+      interestRate: formData.interestRate === "" ? "this field is required" : "",
+      mortgageType: formData.mortgageType === "" ? "this field is required" : "",
+    };
+    setErrors(newErrors);
+
+    const hasAnyError = Object.values(newErrors).some((msg) => msg);
+    if (hasAnyError) {
+      setHasResults(false);
+      return;
+    }
+
     if (formData.mortgageType === "repayment") {
       calculateRepayment();
     } else {
@@ -88,18 +114,21 @@ function App() {
               <label htmlFor="mortgage-amt" className="font-medium">
                 Mortgage Amount
               </label>
-              <div className="flex border rounded-md w-full h-12">
-                <span className="bg-sky-100 rounded-l-md h-full flex items-center px-4 font-bold">
+              <div className={`flex border rounded-md w-full h-12 ${errors.mortgageAmt ? "border-red-500" : ""}`}>
+                <span className={`rounded-l-md h-full flex items-center px-4 font-bold ${errors.mortgageAmt ? "bg-red-600 text-white" : "bg-sky-100"}`}>
                   £
                 </span>
                 <input
                   type="number"
                   name="mortgageAmt"
-                  className="flex-1 outline-none appearance-none h-full px-3"
+                  className={`flex-1 outline-none appearance-none h-full px-3 ${errors.mortgageAmt ? "placeholder-red-400" : ""}`}
                   value={formData.mortgageAmt}
                   onChange={handleChange}
                 />
               </div>
+              {errors.mortgageAmt && (
+                <p className="text-red-600 text-sm">{errors.mortgageAmt}</p>
+              )}
             </div>
 
             <div className="flex flex-col md:flex-row gap-6 flex-wrap">
@@ -107,36 +136,42 @@ function App() {
                 <label htmlFor="mortgage-term" className="font-medium">
                   Mortgage Term
                 </label>
-                <div className="flex border rounded-md w-full h-12">
+                <div className={`flex border rounded-md w-full h-12 ${errors.mortgageTerm ? "border-red-500" : ""}`}>
                   <input
                     type="number"
-                    className="flex-1 outline-none appearance-none h-full px-3"
+                    className={`flex-1 outline-none appearance-none h-full px-3 ${errors.mortgageTerm ? "placeholder-red-400" : ""}`}
                     name="mortgageTerm"
                     value={formData.mortgageTerm}
                     onChange={handleChange}
                   />
-                  <span className="bg-sky-100 rounded-r-md h-full flex items-center px-4 font-bold">
+                  <span className={`rounded-r-md h-full flex items-center px-4 font-bold ${errors.mortgageTerm ? "bg-red-600 text-white" : "bg-sky-100"}`}>
                     years
                   </span>
                 </div>
+                {errors.mortgageTerm && (
+                  <p className="text-red-600 text-sm">{errors.mortgageTerm}</p>
+                )}
               </div>
 
               <div className="flex-1 flex flex-col gap-3">
                 <label htmlFor="mortgage-rate" className="font-medium">
                   Interest Rate
                 </label>
-                <div className="flex border rounded-md w-full h-12">
+                <div className={`flex border rounded-md w-full h-12 ${errors.interestRate ? "border-red-500" : ""}`}>
                   <input
                     type="number"
-                    className="flex-1 outline-none appearance-none h-full px-3"
+                    className={`flex-1 outline-none appearance-none h-full px-3 ${errors.interestRate ? "placeholder-red-400" : ""}`}
                     name="interestRate"
                     value={formData.interestRate}
                     onChange={handleChange}
                   />
-                  <span className="bg-sky-100 rounded-r-md h-full flex items-center px-4 font-bold">
+                  <span className={`rounded-r-md h-full flex items-center px-4 font-bold ${errors.interestRate ? "bg-red-600 text-white" : "bg-sky-100"}`}>
                     %
                   </span>
                 </div>
+                {errors.interestRate && (
+                  <p className="text-red-600 text-sm">{errors.interestRate}</p>
+                )}
               </div>
             </div>
 
@@ -144,7 +179,7 @@ function App() {
               <label htmlFor="mortgageType" className="font-medium">
                 Mortgage Type
               </label>
-              <div className="flex border rounded-md w-full items-center h-12 px-4 gap-4">
+              <div className={`flex border rounded-md w-full items-center h-12 px-4 gap-4 ${errors.mortgageType ? "border-red-500" : ""}`}>
                 <input
                   type="radio"
                   value="repayment"
@@ -157,7 +192,7 @@ function App() {
                   Repayment
                 </label>
               </div>
-              <div className="flex border rounded-md w-full items-center h-12 px-4 gap-4">
+              <div className={`flex border rounded-md w-full items-center h-12 px-4 gap-4 ${errors.mortgageType ? "border-red-500" : ""}`}>
                 <input
                   type="radio"
                   value="interest-only"
@@ -173,6 +208,9 @@ function App() {
                   Interest Only
                 </label>
               </div>
+              {errors.mortgageType && (
+                <p className="text-red-600 text-sm">{errors.mortgageType}</p>
+              )}
             </div>
 
             <button
@@ -190,7 +228,7 @@ function App() {
         </form>
 
         {!hasResults ? (
-          <div className="h-full flex flex-col justify-center items-center gap-4 bg-slate-900 text-white p-6 rounded-md">
+          <div className="h-full flex flex-col justify-center items-center gap-4 bg-slate-900 text-white p-6 rounded-md rounded-bl-[100px]">
             <img
               src="src/assets/images/illustration-empty.svg"
               alt="empty results"
