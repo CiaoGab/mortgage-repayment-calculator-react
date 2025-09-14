@@ -1,4 +1,6 @@
 import { useState } from "react";
+import calculatorIcon from "./assets/images/icon-calculator.svg";
+import emptyIllustration from "./assets/images/illustration-empty.svg";
 
 function App() {
   const [formData, setFormData] = useState({
@@ -218,7 +220,7 @@ function App() {
               className="flex items-center text-lg font-bold justify-center cursor-pointer bg-[#D8DB2F] rounded-full py-4 text-black"
             >
               <img
-                src="src/assets/images/icon-calculator.svg"
+                src={calculatorIcon}
                 alt="calculator icon"
                 className="mr-3"
               />
@@ -230,7 +232,7 @@ function App() {
         {!hasResults ? (
           <div className="h-full flex flex-col justify-center items-center gap-4 bg-slate-900 text-white p-6 md:rounded-md lg:rounded-bl-[100px]">
             <img
-              src="src/assets/images/illustration-empty.svg"
+              src={emptyIllustration}
               alt="empty results"
               className="w-[192px]"
             />
