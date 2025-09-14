@@ -228,7 +228,7 @@ function App() {
         </form>
 
         {!hasResults ? (
-          <div className="h-full flex flex-col justify-center items-center gap-4 bg-slate-900 text-white p-6 rounded-md rounded-bl-[100px]">
+          <div className="h-full flex flex-col justify-center items-center gap-4 bg-slate-900 text-white p-6 md:rounded-md lg:rounded-bl-[100px]">
             <img
               src="src/assets/images/illustration-empty.svg"
               alt="empty results"
